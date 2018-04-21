@@ -6,9 +6,18 @@ namespace Engine.Core.Actions
 {
     public class ActionsList
     {
-        public AsyncState Add<T>(Action<T> action, T args)
+        private List<IActionEntry> _invokeList = new List<IActionEntry>();
+        private List<IActionEntry> _entries = new List<IActionEntry>();
+        private AsyncSheduler _sheduler;
+
+        public ActionsList(AsyncSheduler sheduler)
         {
-            var entry = new ActionsListEntry<T>(action, args);
+            _sheduler = sheduler;
+        }
+
+        public AsyncState<TResult> Add<TArgs, TResult>(Func<TArgs, TResult> action, TArgs args)
+        {
+            var entry = new ActionsListEntry<TArgs, TResult>(action, args, _sheduler);
             _entries.Add(entry);
             return entry.State;
         }
@@ -26,8 +35,5 @@ namespace Engine.Core.Actions
             }
             _invokeList.Clear();
         }
-
-        List<IActionEntry> _invokeList = new List<IActionEntry>();
-        List<IActionEntry> _entries = new List<IActionEntry>();
     }
 }

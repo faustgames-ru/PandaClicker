@@ -3,25 +3,29 @@ using Engine.Core.Asyncs;
 
 namespace Engine.Core.Actions
 {
-    public class ActionsListEntry<T>: IActionEntry
+    public class ActionsListEntry<TArgs, TResult> : IActionEntry
     {
-        private T _args;
-        private Action<T> _action;
-        private AsyncState _state;
+        private TArgs _args;
+        private Func<TArgs, TResult> _action;
+        private AsyncState<TResult> _state;
 
-        public ActionsListEntry(Action<T> action, T args)
+        public ActionsListEntry(Func<TArgs, TResult> action, TArgs args, AsyncSheduler sheduler)
         {
             _action = action;
             _args = args;
-            _state = new AsyncState();
+            _state = new AsyncState<TResult>(sheduler);
         }
 
-        public AsyncState State => _state;
+        public AsyncState<TResult> State => _state;
 
         public void Invoke()
         {
-            _action?.Invoke(_args);
-            AsyncState.Compleate(_state);
+            var result = default(TResult);
+            if (_action != null)
+            {
+                result = _action.Invoke(_args);
+            }
+            _state.Compleate(result);
         }
     }
 }

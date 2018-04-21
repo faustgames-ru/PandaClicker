@@ -266,13 +266,15 @@
     <Compile Include="Assets\Scripts\Engine\Core\Actions\ActionsList.cs" />
     <Compile Include="Assets\Scripts\Engine\Core\Actions\ActionsListEntry.cs" />
     <Compile Include="Assets\Scripts\Engine\Core\Actions\IActionEntry.cs" />
+    <Compile Include="Assets\Scripts\Engine\Core\Asyncs\AsyncSheduler.cs" />
     <Compile Include="Assets\Scripts\Engine\Core\Asyncs\AsyncState.cs" />
+    <Compile Include="Assets\Scripts\Engine\Core\Void.cs" />
+    <Compile Include="Assets\Scripts\Engine\Core\Asyncs\IAsyncAwaiter.cs" />
     <Compile Include="Assets\Scripts\Engine\Core\Pool.cs" />
     <Compile Include="Assets\Scripts\Engine\Core\RingBuffer.cs" />
     <Compile Include="Assets\Scripts\Engine\States\IState.cs" />
     <Compile Include="Assets\Scripts\Engine\States\States.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
 </Project>

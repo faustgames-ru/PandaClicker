@@ -1,49 +1,54 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace Engine.Core.Asyncs
 {
-    public class AsyncStateAwaiter<T> : INotifyCompletion
+    public class AsyncState : AsyncState<Void>
     {
-        public void OnCompleted(Action continuation)
+        public AsyncState(AsyncSheduler sheduler): base(sheduler)
         {
         }
-
-        bool IsCompleted { get; }
-
-        T GetResult()
-        {
-            return default(T);
-        }
-    }
-
-    public class AsyncState
-    {
-        bool _compleated;
-
-        public bool Compleated;
 
         public void Compleate()
         {
-            _compleated = true;
-        }
-
-        public object GetAwaiter()
-        {
-            // todo: implement awaiter
-            return null;
-        }
-
-        internal static void Compleate(AsyncState state)
-        {
-            var stateRef = state;
-            stateRef?.Compleate();
-            state = null;
+            Compleate(Void.Empty);
         }
     }
 
-    public class AsyncSheduler
+    public class AsyncState<T> : IAsyncAwaiter<T>
     {
-    }
+        private bool _compleated;
+        private T _result;
+        private Action _continuation;
+        private AsyncSheduler _sheduler;
 
+        public AsyncState(AsyncSheduler sheduler)
+        {
+            _sheduler = sheduler;
+        }
+
+        public void Compleate(T result)
+        {
+            _result = result;
+            _compleated = true;
+            _sheduler.Shedule(_continuation);
+            _continuation = null;
+        }
+
+        public bool IsCompleted => _compleated;
+
+        public IAsyncAwaiter<T> GetAwaiter()
+        {
+            return this;
+        }
+        
+        public T GetResult()
+        {
+            return _result;
+        }
+
+        public void OnCompleted(Action continuation)
+        {
+            _continuation = continuation;
+        }
+    }
 }
